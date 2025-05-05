@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dark Souls Level Up Menu</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #111;
+      color: #f0e6d2;
+      display: flex;
+      justify-content: center;
+      padding: 40px;
+    }
+    .menu {
+      background: #222;
+      padding: 20px 30px;
+      border: 2px solid #444;
+      width: 320px;
+    }
+    .attribute {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+    }
+    .attribute span {
+      min-width: 100px;
+    }
+    button {
+      background: #444;
+      color: white;
+      border: none;
+      padding: 2px 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="menu">
+    <h2>Level Up</h2>
+    <div class="attribute"><span>Level</span><span id="level">1</span></div>
+    <div class="attribute"><span>Souls</span><span id="souls">1000</span></div>
+    <div class="attribute"><span>Req Souls</span><span id="reqSouls">100</span></div>
+    <hr>
+
+    <!-- Attributes with level up buttons -->
+    <div id="attributes"></div>
+  </div>
+
+  <script>
+    const stats = {
+      Health: 10,
+      Attunement: 10,
+      Endurance: 10,
+      Strength: 10,
+      Dexterity: 10,
+      Discipline: 10,
+      Intelligence: 10,
+      Athleticism: 10,
+      Flexibility: 10,
+      Faith: 10
+    };
+
+    let level = 1;
+    let souls = 1000;
+    
+    function requiredSouls(level) {
+      return Math.floor(100 * Math.pow(1.1, level - 1)); // Example formula
+    }
+
+    function updateDisplay() {
+      document.getElementById("level").textContent = level;
+      document.getElementById("souls").textContent = souls;
+      document.getElementById("reqSouls").textContent = requiredSouls(level);
+    }
+
+    function createAttributeElements() {
+      const container = document.getElementById("attributes");
+      container.innerHTML = '';
+      for (const [key, value] of Object.entries(stats)) {
+        const div = document.createElement("div");
+        div.className = "attribute";
+        div.innerHTML = `
+          <span>${key}</span>
+          <span>${value}</span>
+          <button onclick="levelUp('${key}')">+</button>
+        `;
+        container.appendChild(div);
+      }
+    }
+
+    function levelUp(stat) {
+      const cost = requiredSouls(level);
+      if (souls >= cost) {
+        souls -= cost;
+        level++;
+        stats[stat]++;
+        updateDisplay();
+        createAttributeElements();
+      } else {
+        alert("Not enough souls!");
+      }
+    }
+
+    // Initial render
+    updateDisplay();
+    createAttributeElements();
+  </script>
+</body>
+</html>
